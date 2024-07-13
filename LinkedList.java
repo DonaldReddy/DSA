@@ -229,7 +229,7 @@ public class LinkedList {
         return head;
     }
 
-    // O(log N)
+    // O(N / 2)
     static Node findMid(Node head, boolean lower) {
 
         Node fast = head, slow = head;

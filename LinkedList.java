@@ -229,7 +229,7 @@ public class LinkedList {
         return head;
     }
 
-    // O(log N)
+    // O(N / 2)
     static Node findMid(Node head, boolean lower) {
 
         Node fast = head, slow = head;
@@ -247,6 +247,156 @@ public class LinkedList {
 
         return slow.next;
 
+    }
+
+    // O(N / 2)
+    static Node findMidRec(Node fast, Node slow, boolean lower) {
+
+        if (fast.next == null)
+            return slow;
+
+        if (fast.next.next == null) {
+            if (lower)
+                return slow;
+            return slow.next;
+        }
+
+        return findMidRec(fast.next.next, slow.next, lower);
+
+    }
+
+    // O(N)
+    static Node findDistinct(Node head) {
+
+        Node ptr = head;
+
+        while (ptr != null) {
+            Node ptr2 = ptr;
+            while (ptr2 != null && ptr2.data == ptr.data) {
+                ptr2 = ptr2.next;
+            }
+            ptr.next = ptr2;
+            ptr = ptr2;
+        }
+        return head;
+    }
+
+    // O(N + M)
+    static Node merge(Node list1, Node list2) {
+
+        Node dummy = new Node(-1, null);
+        Node prev = dummy;
+
+        Node p1 = list1, p2 = list2;
+
+        while (p1 != null && p2 != null) {
+
+            if (p1.data <= p2.data) {
+                prev.next = p1;
+                p1 = p1.next;
+                prev.next.next = null;
+            } else {
+                prev.next = p2;
+                p2 = p2.next;
+                prev.next.next = null;
+            }
+            prev = prev.next;
+        }
+
+        if (p1 != null) {
+            while (p1 != null) {
+                prev.next = p1;
+                p1 = p1.next;
+                prev.next.next = null;
+            }
+        }
+
+        if (p2 != null) {
+            while (p2 != null) {
+                prev.next = p2;
+                p2 = p2.next;
+                prev.next.next = null;
+            }
+        }
+
+        return dummy.next;
+
+    }
+
+    // O(NlogN)
+    static Node mergeSort(Node head) {
+        if (head == null || head.next == null)
+            return head;
+
+        Node mid = findMid(head, false);
+
+        Node right = mid.next;
+        mid.next = null;
+        Node left = head;
+
+        Node ls = mergeSort(left);
+        Node rs = mergeSort(right);
+
+        return merge(ls, rs);
+    }
+
+    // O(N)
+    static Node reverseRec(Node head) {
+        if (head.next == null)
+            return head;
+
+        Node lastNode = reverseRec(head.next);
+
+        head.next.next = head;
+        head.next = null;
+
+        return lastNode;
+    }
+
+    // O(N)
+    static boolean checkPalindrome(Node head) {
+
+        if (head == null || head.next == null)
+            return true;
+
+        Node mid = findMid(head, false);
+        Node revList = reverseRec(mid.next);
+        mid.next = null;
+
+        Node p1 = head, p2 = revList;
+
+        while (p2 != null) {
+            if (p1.data != p2.data)
+                return false;
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+
+        return true;
+    }
+
+    // O(N)
+    static Node firstLastMix(Node head) {
+
+        Node mid = findMid(head, false);
+        Node right = reverseRec(mid.next);
+
+        mid.next = null;
+
+        Node p1 = head, p2 = right;
+
+        while (p2 != null) {
+            Node t1 = p1.next;
+            Node t2 = p2.next;
+
+            p1.next = p2;
+            p2.next = t1;
+
+            p1 = t1;
+            p2 = t2;
+        }
+
+        return head;
     }
 
 }

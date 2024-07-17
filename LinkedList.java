@@ -399,4 +399,163 @@ public class LinkedList {
         return head;
     }
 
+    // O(N)
+    static Node oddEven(Node head) {
+
+        Node oddList = odd(head);
+        Node evenList = even(head);
+
+        Node ptr = oddList;
+
+        while (ptr.next != null) {
+            ptr = ptr.next;
+        }
+
+        ptr.next = evenList;
+
+        return oddList;
+
+    }
+
+    // O(N)
+    static Node odd(Node head) {
+        if (head == null)
+            return null;
+        if (head.data % 2 == 1) {
+            head.next = odd(head.next);
+            return head;
+        }
+        return odd(head.next);
+    }
+
+    // O(N)
+    static Node even(Node head) {
+        if (head == null)
+            return null;
+        if (head.data % 2 == 0) {
+            head.next = even(head.next);
+            return head;
+        }
+        return even(head.next);
+    }
+
+    // O(N + M)
+    static Node addTwoLists(Node l1, Node l2) {
+
+        l1 = reverseRec(l1);
+        l2 = reverseRec(l2);
+
+        int n = count(l1), m = count(l2);
+
+        Node ptr = null;
+
+        if (n >= m)
+            ptr = l1;
+        else
+            ptr = l2;
+
+        Node p1 = l1, p2 = l2;
+        int rem = 0;
+
+        while (p1 != null || p2 != null || rem != 0) {
+
+            int sum = 0;
+
+            if (p1 != null)
+                sum += p1.data;
+
+            if (p2 != null)
+                sum += p2.data;
+
+            sum += rem;
+
+            rem = sum / 10;
+
+            sum = sum % 10;
+
+            if (ptr == null) {
+                Node newNode = new Node(sum, null);
+                newNode.next = n >= m ? l1 : l2;
+                return newNode;
+            }
+
+            ptr.data = sum;
+
+            ptr = ptr.next;
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+        return n >= m ? l1 : l2;
+    }
+
+    // O(N + M)
+    static Node findIntersectionPoint(Node l1, Node l2) {
+
+        int n = count(l1), m = count(l2);
+
+        int diff = Math.abs(n - m);
+
+        Node ptr1 = null, ptr2 = null;
+
+        if (n >= m) {
+            ptr1 = l1;
+            ptr2 = l2;
+        } else {
+            ptr1 = l2;
+            ptr2 = l1;
+        }
+
+        for (int i = 0; i < diff; i++)
+            ptr1 = ptr1.next;
+
+        while (ptr1 != null && ptr2 != null) {
+            if (ptr1 == ptr2)
+                return ptr1;
+            ptr1 = ptr1.next;
+            ptr2 = ptr2.next;
+        }
+
+        return null;
+    }
+
+    static boolean hasCycle(Node head) {
+
+        Node fast = head, slow = head;
+
+        while (fast != null) {
+            if (slow == fast)
+                return true;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        return false;
+    }
+
+    static Node breakCycle(Node head) {
+
+        if (!hasCycle(head))
+            return head;
+
+        Node fast = head, slow = head;
+
+        while (fast != slow) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        Node ptr = head, temp = null;
+
+        while (ptr != slow) {
+            ptr = ptr.next;
+            temp = slow;
+            slow = slow.next;
+        }
+
+        temp.next = null;
+
+        return head;
+
+    }
+
 }
